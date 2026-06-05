@@ -1,772 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adega 51 - Área 51</title>
+  <meta charset="UTF-8">
+  <title>Adega 51 - Estoque</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#050505;
-color:white;
-padding:15px;
-}
-
-.container{
-max-width:1200px;
-margin:auto;
-}
-
-.logo{
-text-align:center;
-font-size:35px;
-font-weight:bold;
-color:#7CFF00;
-text-shadow:0 0 20px #7CFF00;
-margin-bottom:20px;
-}
-
-.card{
-background:#0d0d0d;
-border:1px solid #7CFF00;
-border-radius:15px;
-padding:15px;
-margin-bottom:15px;
-box-shadow:0 0 15px rgba(124,255,0,.2);
-}
-
-h2{
-color:#7CFF00;
-margin-bottom:10px;
-}
-
-select,input{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-margin-bottom:10px;
-}
-
-button{
-border:none;
-border-radius:10px;
-padding:12px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.produtos{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:10px;
-}
-
-.produto{
-background:#7CFF00;
-color:black;
-font-weight:bold;
-padding:12px;
-border-radius:10px;
-text-align:center;
-cursor:pointer;
-}
-
-.produto:hover{
-opacity:.8;
-}
-
-.dashboard{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:10px;
-}
-
-.box{
-background:#111;
-padding:15px;
-border-radius:10px;
-border:1px solid #7CFF00;
-text-align:center;
-}
-
-.valor{
-font-size:24px;
-color:#7CFF00;
-font-weight:bold;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:10px;
-border-bottom:1px solid #333;
-text-align:left;
-}
-
-.excluir{
-background:red;
-color:white;
-padding:5px 10px;
-}
-
-.acao{
-background:#7CFF00;
-color:black;
-width:100%;
-margin-top:5px;
-}
-
-@media(max-width:700px){
-.logo{
-font-size:28px;
-}
-}
-</style>
+  <style>
+    body { font-family: Arial; background:#111; color:#fff; text-align:center; }
+    input, button {
+      padding:10px; margin:5px; border-radius:8px; border:none;
+    }
+    button { background:#ff3b3b; color:#fff; cursor:pointer; }
+    .card {
+      background:#222; margin:10px auto; padding:10px;
+      width:90%; max-width:400px; border-radius:10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-
-<div class="logo">
-👽 ADEGA 51 - ÁREA 51 👽
-</div>
-
-<div class="card">
-<h2>Operador</h2>
-
-<select id="operador" onchange="verificarPermissao()">
-<option>Carlos</option>
-<option>Felipe</option>
-<option>Eliezer</option>
-<option>Caio</option>
-</select>
-</div>
-
-<div class="card">
-<h2>Dashboard</h2>
-
-<div class="dashboard">
-
-<div class="box">
-Vendas
-<div class="valor" id="totalVendas">R$0</div>
-</div>
-
-<div class="box">
-Despesas
-<div class="valor" id="totalDespesas">R$0</div>
-</div>
-
-<div class="box">
-Saldo
-<div class="valor" id="saldo">R$0</div>
-</div>
-
-<div class="box">
-Qtd Vendas
-<div class="valor" id="contador">0</div>
-</div>
-
-</div>
-
-</div>
-
-<div class="card">
-<h2>Abertura de Caixa</h2>
-
-<input type="number" id="abertura" placeholder="Valor inicial">
-
-<button class="acao" onclick="salvarAbertura()">
-Salvar Abertura
-</button>
-</div>
-
-<div class="card">
-<h2>Produtos</h2>
-
-<div class="produtos">
-
-<div class="produto" onclick="addVenda('Caipirinha',20)">
-Caipirinha<br>R$20
-</div>
-
-<div class="produto" onclick="addVenda('Caip Vodka',20)">
-Caip Vodka<br>R$20
-</div>
-
-<div class="produto" onclick="addVenda('Brahma Piriguete',5)">
-Brahma Piriguete<br>R$5
-</div>
-
-<div class="produto" onclick="addVenda('Brahma Latinha',5)">
-Brahma Latinha<br>R$5
-</div>
-
-<div class="produto" onclick="addVenda('Coca-Cola',6)">
-Coca-Cola<br>R$6
-</div>
-
-<div class="produto" onclick="addVenda('Guaraná',6)">
-Guaraná<br>R$6
-</div>
-
-<div class="produto" onclick="addVenda('Espetinho de Boi',8)">
-Espetinho de Boi<br>R$8
-</div>
-
-<div class="produto" onclick="addVenda('Espetinho de Porco',8)">
-Espetinho de Porco<br>R$8
-</div>
-
-<div class="produto" onclick="addVenda('Medalhão',10)">
-Medalhão<br>R$10
-</div>
-
-<div class="produto" onclick="addVenda('Old Walker',7)">
-Old Walker<br>R$7
-</div>
-
-<div class="produto" onclick="addVenda('Paratudo',5)">
-Paratudo<br>R$5
-</div>
-
-<div class="produto" onclick="addVenda('Campari',10)">
-Campari<br>R$10
-</div>
-
-<div class="produto" onclick="addVenda('Mansão Maromba Copo',20)">
-Mansão Maromba Copo<br>R$20
-</div>
-
-<div class="produto" onclick="addVenda('Mansão Maromba Garrafa + 2 gelos',32)">
-Mansão Maromba Garrafa<br>R$32
-</div>
-
-<div class="produto" onclick="addVenda('Copão Whisky + Energético 500ml',15)">
-Copão 500ml<br>R$15
-</div>
-
-<div class="produto" onclick="addVenda('Copão Whisky + Energético 700ml',20)">
-Copão 700ml<br>R$20
-</div>
-
-</div>
-
-</div>
-<div class="card">
-<h2>Registrar Despesa</h2>
-
-<input type="text" id="descricaoDespesa" placeholder="Descrição da despesa">
-
-<input type="number" id="valorDespesa" placeholder="Valor">
-
-<button class="acao" onclick="addDespesa()">
-Adicionar Despesa
-</button>
-
-</div>
-
-<div class="card">
-<h2>Pesquisar Histórico</h2>
-
-<input
-type="text"
-id="pesquisa"
-placeholder="Pesquisar produto ou operador"
-onkeyup="renderHistorico()">
-</div>
-
-<div class="card">
-<h2>Histórico de Vendas</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Hora</th>
-<th>Produto</th>
-<th>Valor</th>
-<th>Operador</th>
-<th>Ação</th>
-</tr>
-</thead>
-
-<tbody id="historicoVendas">
-</tbody>
-
-</table>
-
-</div>
-
-<div class="card">
-<h2>Relatório de Despesas</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Hora</th>
-<th>Descrição</th>
-<th>Valor</th>
-</tr>
-</thead>
-
-<tbody id="historicoDespesas">
-</tbody>
-
-</table>
-
-</div>
-
-<div class="card">
-
-<h2>Fechamento de Caixa</h2>
-
-<div id="resumoFechamento"></div>
-
-<button
-class="acao"
-id="btnFechar"
-onclick="fecharCaixa()">
-Fechar Caixa
-</button>
-
-<button
-class="acao"
-onclick="exportarPDF()">
-Exportar PDF
-</button>
-
-<button
-class="acao"
-onclick="limparHistorico()">
-Limpar Histórico
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-let abertura =
-Number(localStorage.getItem("abertura")) || 0;
-
-let vendas =
-JSON.parse(localStorage.getItem("vendas")) || [];
-
-let despesas =
-JSON.parse(localStorage.getItem("despesas")) || [];
-
-function salvarDados(){
-
-localStorage.setItem(
-"abertura",
-abertura
-);
-
-localStorage.setItem(
-"vendas",
-JSON.stringify(vendas)
-);
-
-localStorage.setItem(
-"despesas",
-JSON.stringify(despesas)
-);
-
-}
-
-function salvarAbertura(){
-
-abertura =
-Number(
-document.getElementById("abertura").value
-);
-
-salvarDados();
-
-atualizarDashboard();
-
-}
-
-function addVenda(produto,valor){
-
-let operador =
-document.getElementById("operador").value;
-
-vendas.push({
-
-produto,
-valor,
-operador,
-
-hora:new Date().toLocaleString("pt-BR")
-
-});
-
-salvarDados();
-
-renderHistorico();
-
-atualizarDashboard();
-
-}
-
-function addDespesa(){
-
-let descricao =
-document.getElementById(
-"descricaoDespesa"
-).value;
-
-let valor =
-Number(
-document.getElementById(
-"valorDespesa"
-).value
-);
-
-if(!valor) return;
-
-despesas.push({
-
-descricao,
-valor,
-
-hora:new Date().toLocaleString("pt-BR")
-
-});
-
-salvarDados();
-
-renderDespesas();
-
-atualizarDashboard();
-
-}
-
-function excluirVenda(index){
-
-if(
-confirm(
-"Deseja excluir esta venda?"
-)
-){
-
-vendas.splice(index,1);
-
-salvarDados();
-
-renderHistorico();
-
-atualizarDashboard();
-
-}
-
-}
-
-function renderHistorico(){
-
-let filtro =
-document
-.getElementById("pesquisa")
-.value
-.toLowerCase();
-
-let html="";
-
-vendas.forEach((v,index)=>{
-
-let texto=
-`${v.produto}
-${v.operador}`
-.toLowerCase();
-
-if(
-!texto.includes(filtro)
-) return;
-
-html += `
-<tr>
-
-<td>${v.hora}</td>
-
-<td>${v.produto}</td>
-
-<td>R$ ${v.valor.toFixed(2)}</td>
-
-<td>${v.operador}</td>
-
-<td>
-
-<button
-class="excluir"
-onclick="excluirVenda(${index})">
-X
-</button>
-
-</td>
-
-</tr>
-`;
-
-});
-
-document.getElementById(
-"historicoVendas"
-).innerHTML = html;
-
-}
-
-function renderDespesas(){
-
-let html="";
-
-despesas.forEach(d=>{
-
-html += `
-<tr>
-
-<td>${d.hora}</td>
-
-<td>${d.descricao}</td>
-
-<td>R$ ${d.valor.toFixed(2)}</td>
-
-</tr>
-`;
-
-});
-
-document.getElementById(
-"historicoDespesas"
-).innerHTML = html;
-
-}
-
-function atualizarDashboard(){
-
-let totalVendas =
-vendas.reduce(
-(total,v)=>total+v.valor,
-0
-);
-
-let totalDespesas =
-despesas.reduce(
-(total,d)=>total+d.valor,
-0
-);
-
-let saldo =
-abertura +
-totalVendas -
-totalDespesas;
-
-document.getElementById(
-"totalVendas"
-).innerHTML =
-"R$ " +
-totalVendas.toFixed(2);
-
-document.getElementById(
-"totalDespesas"
-).innerHTML =
-"R$ " +
-totalDespesas.toFixed(2);
-
-document.getElementById(
-"saldo"
-).innerHTML =
-"R$ " +
-saldo.toFixed(2);
-
-document.getElementById(
-"contador"
-).innerHTML =
-vendas.length;
-
-let operadores = {
-Carlos:0,
-Felipe:0,
-Eliezer:0,
-Caio:0
-};
-
-vendas.forEach(v=>{
-operadores[v.operador]+=v.valor;
-});
-
-document.getElementById(
-"resumoFechamento"
-).innerHTML = `
-
-<p><b>Abertura:</b> R$ ${abertura.toFixed(2)}</p>
-
-<p><b>Total Vendas:</b> R$ ${totalVendas.toFixed(2)}</p>
-
-<p><b>Total Despesas:</b> R$ ${totalDespesas.toFixed(2)}</p>
-
-<p><b>Saldo Final:</b> R$ ${saldo.toFixed(2)}</p>
-
-<hr>
-
-<p><b>Carlos:</b> R$ ${operadores.Carlos.toFixed(2)}</p>
-
-<p><b>Felipe:</b> R$ ${operadores.Felipe.toFixed(2)}</p>
-
-<p><b>Eliezer:</b> R$ ${operadores.Eliezer.toFixed(2)}</p>
-
-<p><b>Caio:</b> R$ ${operadores.Caio.toFixed(2)}</p>
-
-`;
-
-}
-
-function verificarPermissao(){
-
-let operador =
-document.getElementById(
-"operador"
-).value;
-
-let btn =
-document.getElementById(
-"btnFechar"
-);
-
-if(operador==="Caio"){
-
-btn.style.display="block";
-
-}else{
-
-btn.style.display="none";
-
-}
-
-}
-
-function fecharCaixa(){
-
-let operador =
-document.getElementById(
-"operador"
-).value;
-
-if(operador!=="Caio"){
-
-alert(
-"Apenas Caio pode fechar o caixa."
-);
-
-return;
-
-}
-
-let totalVendas =
-vendas.reduce(
-(total,v)=>total+v.valor,
-0
-);
-
-let totalDespesas =
-despesas.reduce(
-(total,d)=>total+d.valor,
-0
-);
-
-let saldo =
-abertura +
-totalVendas -
-totalDespesas;
-
-alert(
-
-"CAIXA FECHADO\n\n" +
-
-"Vendas: R$ " +
-totalVendas.toFixed(2) +
-
-"\nDespesas: R$ " +
-totalDespesas.toFixed(2) +
-
-"\nSaldo Final: R$ " +
-saldo.toFixed(2)
-
-);
-
-}
-
-function exportarPDF(){
-
-window.print();
-
-}
-
-function limparHistorico(){
-
-let senha =
-prompt(
-"Digite a senha:"
-);
-
-if(senha !== "5151"){
-
-alert(
-"Senha incorreta."
-);
-
-return;
-
-}
-
-if(
-confirm(
-"Deseja apagar tudo?"
-)
-){
-
-vendas=[];
-despesas=[];
-abertura=0;
-
-salvarDados();
-
-renderHistorico();
-
-renderDespesas();
-
-atualizarDashboard();
-
-alert(
-"Histórico apagado."
-);
-
-}
-
-}
-
-renderHistorico();
-
-renderDespesas();
-
-atualizarDashboard();
-
-verificarPermissao();
+<h2>🍺 Adega 51 - Estoque</h2>
+
+<input id="nome" placeholder="Nome da bebida">
+<input id="qtd" type="number" placeholder="Quantidade">
+<button onclick="adicionar()">Adicionar</button>
+
+<div id="lista"></div>
+
+<script type="module">
+  // Firebase (modular)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // SUA CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGoMZmThe9MyEEv0NPnVP3VHGIXWM4OLs",
+    authDomain: "area-51-e8547.firebaseapp.com",
+    projectId: "area-51-e8547",
+    storageBucket: "area-51-e8547.firebasestorage.app",
+    messagingSenderId: "803192120199",
+    appId: "1:803192120199:web:8e08ea4aa1207bc2512922"
+  };
+
+  // INIT
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const lista = document.getElementById("lista");
+
+  // ADICIONAR PRODUTO
+  window.adicionar = async function () {
+    const nome = document.getElementById("nome").value;
+    const qtd = parseInt(document.getElementById("qtd").value);
+
+    if (!nome || !qtd) return alert("Preencha tudo");
+
+    await addDoc(collection(db, "estoque"), {
+      nome,
+      qtd
+    });
+
+    document.getElementById("nome").value = "";
+    document.getElementById("qtd").value = "";
+  }
+
+  // TEMPO REAL (SINCRONIZA COM TODOS CELULARES)
+  onSnapshot(collection(db, "estoque"), (snapshot) => {
+    lista.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+      const item = doc.data();
+
+      lista.innerHTML += `
+        <div class="card">
+          <h3>${item.nome}</h3>
+          <p>Quantidade: ${item.qtd}</p>
+        </div>
+      `;
+    });
+  });
 
 </script>
 
