@@ -1,81 +1,171 @@
-<script type="module">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adega 51 - Área 51</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{background:#050505;color:#fff;padding:15px;}
+.container{max-width:1200px;margin:auto;}
+.logo{text-align:center;font-size:32px;font-weight:bold;color:#7CFF00;text-shadow:0 0 20px #7CFF00;margin-bottom:20px;}
+.card{background:#0d0d0d;border:1px solid #7CFF00;border-radius:15px;padding:15px;margin-bottom:15px;}
+h2{color:#7CFF00;margin-bottom:10px;}
+input,select{width:100%;padding:12px;border:none;border-radius:10px;margin-bottom:10px;}
+button{border:none;border-radius:10px;padding:12px;cursor:pointer;font-weight:bold;}
+.produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.produto{background:#7CFF00;color:#000;font-weight:bold;padding:12px;border-radius:10px;text-align:center;cursor:pointer;}
+.produto:hover{opacity:.8;}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
+.box{background:#111;padding:15px;border-radius:10px;border:1px solid #7CFF00;text-align:center;}
+.valor{font-size:22px;color:#7CFF00;font-weight:bold;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px;border-bottom:1px solid #333;text-align:left;}
+.excluir{background:red;color:#fff;padding:5px 10px;}
+.acao{background:#7CFF00;color:#000;width:100%;margin-top:5px;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">👽 ADEGA 51 - ÁREA 51 👽</div>
+
+<div class="card">
+<h2>Operador</h2>
+<select id="operador">
+<option>Carlos</option>
+<option>Felipe</option>
+<option>Eliezer</option>
+<option>Caio</option>
+</select>
+</div>
+
+<div class="card">
+<h2>Dashboard</h2>
+<div class="dashboard">
+<div class="box">Vendas<div class="valor" id="totalVendas">R$0</div></div>
+<div class="box">Despesas<div class="valor" id="totalDespesas">R$0</div></div>
+<div class="box">Saldo<div class="valor" id="saldo">R$0</div></div>
+<div class="box">Qtd<div class="valor" id="contador">0</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Produtos</h2>
+<div class="produtos">
+<div class="produto" onclick="addVenda('Caipirinha',20)">Caipirinha</div>
+<div class="produto" onclick="addVenda('Caip Vodka',20)">Caip Vodka</div>
+<div class="produto" onclick="addVenda('Brahma',5)">Brahma</div>
+<div class="produto" onclick="addVenda('Coca-Cola',6)">Coca</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Despesa</h2>
+<input id="descricaoDespesa" placeholder="Descrição">
+<input id="valorDespesa" type="number" placeholder="Valor">
+<button class="acao" onclick="addDespesa()">Adicionar</button>
+</div>
+
+<div class="card">
+<h2>Histórico</h2>
+<table>
+<tbody id="historico"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+let vendas = [];
+let despesas = [];
+
+// 🔥 FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  deleteDoc,
-  doc
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+deleteDoc,
+doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 SUA CONFIG FIREBASE
 const firebaseConfig = {
-  apiKey: "AIzaSyAGoMZmThe9MyEEv0NPnVP3VHGIXWM4OLs",
-  authDomain: "area-51-e8547.firebaseapp.com",
-  projectId: "area-51-e8547",
-  storageBucket: "area-51-e8547.firebasestorage.app",
-  messagingSenderId: "803192120199",
-  appId: "1:803192120199:web:8e08ea4aa1207bc2512922"
+apiKey: "AIzaSyAGoMZmThe9MyEEv0NPnVP3VHGIXWM4OLs",
+authDomain: "area-51-e8547.firebaseapp.com",
+projectId: "area-51-e8547",
+storageBucket: "area-51-e8547.firebasestorage.app",
+messagingSenderId: "803192120199",
+appId: "1:803192120199:web:8e08ea4aa1207bc2512922"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ====== VENDAS EM TEMPO REAL ======
-window.addVenda = async function(produto, valor) {
-  const operador = document.getElementById("operador").value;
+// ===== VENDAS =====
+window.addVenda = async function(produto, valor){
+const operador = document.getElementById("operador").value;
 
-  await addDoc(collection(db, "vendas"), {
-    produto,
-    valor,
-    operador,
-    hora: new Date().toLocaleString("pt-BR")
-  });
+await addDoc(collection(db,"vendas"),{
+produto,valor,operador,
+hora:new Date().toLocaleString("pt-BR")
+});
 };
 
-// ====== DESPESAS ======
-window.addDespesa = async function() {
-  const descricao = document.getElementById("descricaoDespesa").value;
-  const valor = Number(document.getElementById("valorDespesa").value);
+// ===== DESPESAS =====
+window.addDespesa = async function(){
+const desc = document.getElementById("descricaoDespesa").value;
+const valor = Number(document.getElementById("valorDespesa").value);
 
-  if (!valor) return;
+if(!valor) return;
 
-  await addDoc(collection(db, "despesas"), {
-    descricao,
-    valor,
-    hora: new Date().toLocaleString("pt-BR")
-  });
+await addDoc(collection(db,"despesas"),{
+descricao:desc,
+valor,
+hora:new Date().toLocaleString("pt-BR")
+});
 };
 
-// ====== LISTA VENDAS ======
-onSnapshot(collection(db, "vendas"), (snapshot) => {
-  vendas = [];
-
-  snapshot.forEach((d) => {
-    vendas.push({ id: d.id, ...d.data() });
-  });
-
-  renderHistorico();
-  atualizarDashboard();
+// ===== SNAPSHOT VENDAS =====
+onSnapshot(collection(db,"vendas"),(snap)=>{
+vendas=[];
+snap.forEach(d=>vendas.push({id:d.id,...d.data()}));
+render();
 });
 
-// ====== LISTA DESPESAS ======
-onSnapshot(collection(db, "despesas"), (snapshot) => {
-  despesas = [];
-
-  snapshot.forEach((d) => {
-    despesas.push({ id: d.id, ...d.data() });
-  });
-
-  renderDespesas();
-  atualizarDashboard();
+// ===== SNAPSHOT DESPESAS =====
+onSnapshot(collection(db,"despesas"),(snap)=>{
+despesas=[];
+snap.forEach(d=>despesas.push({id:d.id,...d.data()}));
+render();
 });
 
-// ====== EXCLUIR VENDA ======
-window.excluirVenda = async function(id) {
-  if (confirm("Deseja excluir esta venda?")) {
-    await deleteDoc(doc(db, "vendas", id));
-  }
-};
+// ===== RENDER =====
+function render(){
+
+let totalV=0,totalD=0,html="";
+
+vendas.forEach(v=>{
+totalV+=v.valor;
+html+=`<tr><td>${v.hora}</td><td>${v.produto}</td><td>R$${v.valor}</td><td>${v.operador}</td></tr>`;
+});
+
+despesas.forEach(d=>{
+totalD+=d.valor;
+html+=`<tr><td>${d.hora}</td><td>${d.descricao}</td><td>-R$${d.valor}</td><td></td></tr>`;
+});
+
+document.getElementById("historico").innerHTML=html;
+document.getElementById("totalVendas").innerHTML="R$ "+totalV.toFixed(2);
+document.getElementById("totalDespesas").innerHTML="R$ "+totalD.toFixed(2);
+document.getElementById("saldo").innerHTML="R$ "+(totalV-totalD).toFixed(2);
+document.getElementById("contador").innerHTML=vendas.length;
+}
 </script>
+
+</body>
+</html>
