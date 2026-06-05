@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adega 51 - Área 51</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#050505,#0f2a1f);
+color:white;
+padding:20px;
+}
+.container{max-width:900px;margin:auto}
+.logo{
+text-align:center;
+font-size:38px;
+font-weight:bold;
+color:#7CFF00;
+text-shadow:0 0 15px #7CFF00;
+margin-bottom:20px;
+}
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid #7CFF00;
+border-radius:15px;
+padding:15px;
+margin-bottom:15px;
+backdrop-filter:blur(5px);
+}
+h2{color:#7CFF00;margin-bottom:10px}
+input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin:5px 0;
+}
+button{
+width:100%;
+padding:12px;
+background:#7CFF00;
+color:black;
+font-weight:bold;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+button:hover{opacity:.9}
+.resumo{
+font-size:18px;
+line-height:1.8;
+}
+.total{
+font-size:24px;
+color:#7CFF00;
+font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="logo">👽 ADEGA 51 👽</div>
+
+<div class="card">
+<h2>Abertura de Caixa</h2>
+<input type="number" id="abertura" placeholder="Valor inicial">
+<button onclick="salvarAbertura()">Salvar</button>
+</div>
+
+<div class="card">
+<h2>Registrar Venda</h2>
+<input type="number" id="venda" placeholder="Valor da venda">
+<button onclick="addVenda()">Adicionar Venda</button>
+</div>
+
+<div class="card">
+<h2>Registrar Despesa</h2>
+<input type="number" id="despesa" placeholder="Valor da despesa">
+<button onclick="addDespesa()">Adicionar Despesa</button>
+</div>
+
+<div class="card">
+<h2>Fechamento de Caixa</h2>
+<div id="resumo" class="resumo"></div>
+<button onclick="fecharCaixa()">Atualizar</button>
+</div>
+</div>
+
+<script>
+let abertura = Number(localStorage.getItem('abertura')) || 0;
+let vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
+let despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+
+function salvarAbertura(){
+abertura = Number(document.getElementById('abertura').value);
+localStorage.setItem('abertura',abertura);
+fecharCaixa();
+}
+
+function addVenda(){
+const v = Number(document.getElementById('venda').value);
+if(!v) return;
+vendas.push(v);
+localStorage.setItem('vendas',JSON.stringify(vendas));
+document.getElementById('venda').value='';
+fecharCaixa();
+}
+
+function addDespesa(){
+const d = Number(document.getElementById('despesa').value);
+if(!d) return;
+despesas.push(d);
+localStorage.setItem('despesas',JSON.stringify(despesas));
+document.getElementById('despesa').value='';
+fecharCaixa();
+}
+
+function fecharCaixa(){
+const totalVendas=vendas.reduce((a,b)=>a+b,0);
+const totalDespesas=despesas.reduce((a,b)=>a+b,0);
+const saldo=abertura+totalVendas-totalDespesas;
+
+document.getElementById('resumo').innerHTML=`
+💵 Abertura: R$ ${abertura.toFixed(2)}<br>
+🚀 Vendas: R$ ${totalVendas.toFixed(2)}<br>
+🛸 Despesas: R$ ${totalDespesas.toFixed(2)}<br><br>
+<div class="total">Saldo Final: R$ ${saldo.toFixed(2)}</div>`;
+}
+fecharCaixa();
+</script>
+</body>
+</html>
